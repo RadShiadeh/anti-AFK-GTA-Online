@@ -71,7 +71,7 @@ int randGen(double mean, double std) {
 
 void wiggleMouse(LONG dx, LONG dy) {
     const int steps = 1000;
-    const double factor = 0.005;
+    const double factor = 0.00001;
 
     for (int i = 1; i <= steps; i++) {
         double t = static_cast<double>(i) / steps;
@@ -91,8 +91,8 @@ void wiggleMouse(LONG dx, LONG dy) {
 int main() {
     while (true) {
         int sleep_timer = randGen(1, 0);
-        int dx = randGen(0.0, 5.0);
-        int dy = randGen(0.0, 1);
+        int dx = randGen(0.0, 2.0);
+        int dy = randGen(0.0, 0.01);
         PressKey(0x11);
         std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
         ReleaseKey(0x11);
