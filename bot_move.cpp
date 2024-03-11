@@ -58,22 +58,46 @@ void ReleaseKey(USHORT hexKeyCode) {
     SendInput(1, lpInput, sizeof(INPUT));
 }
 
-void wiggleMouse(LONG dx, LONG dy) {
-    Input_I ii;
-    ii.mi = {dx, dy, 0, MOUSEEVENTF_MOVE, 0, 0};
-    Input x = {INPUT_MOUSE, ii};
+int randGen(double mean, double std) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    LPINPUT lpInput = reinterpret_cast<LPINPUT>(&x);
-    SendInput(1, lpInput, sizeof(INPUT));
+    std::normal_distribution<double> norm(mean, std);
+
+    double randint = norm(gen);
+
+    return int(randint);
+}
+
+void wiggleMouse(LONG dx, LONG dy) {
+    const int steps = 1000;
+    const double factor = 0.005;
+
+    for (int i = 1; i <= steps; i++) {
+        double t = static_cast<double>(i) / steps;
+        double ease = pow(t, factor);
+
+        LONG easedDx = static_cast<LONG>(dx * ease);
+        LONG easedDy = static_cast<LONG>(dy * ease);
+
+        Input_I ii;
+        ii.mi = {easedDx, easedDy, 0, MOUSEEVENTF_MOVE, 0, 0};
+        Input x = {INPUT_MOUSE, ii};
+        LPINPUT lpInput = reinterpret_cast<LPINPUT>(&x);
+        SendInput(1, lpInput, sizeof(INPUT));
+    }
 }
 
 int main() {
     while (true) {
+        int sleep_timer = randGen(1, 0);
+        int dx = randGen(0.0, 5.0);
+        int dy = randGen(0.0, 1);
         PressKey(0x11);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
         ReleaseKey(0x11);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        wiggleMouse(101, 110);
+        std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
+        wiggleMouse(dx, dy);
     }
 
     return 0;
