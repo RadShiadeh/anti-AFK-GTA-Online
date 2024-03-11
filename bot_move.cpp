@@ -89,15 +89,32 @@ void wiggleMouse(LONG dx, LONG dy) {
 }
 
 int main() {
+    auto timer_start = std::chrono::high_resolution_clock::now();
+
     while (true) {
         int sleep_timer = randGen(1, 0);
         int dx = randGen(0.0, 2.0);
         int dy = randGen(0.0, 0.01);
-        PressKey(0x11);
+
+        PressKey(0x11); //http://www.gamespp.com/directx/directInputKeyboardScanCodes.html for codes
         std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
+
         ReleaseKey(0x11);
         std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
+
         wiggleMouse(dx, dy);
+
+
+        auto timer_end = std::chrono::high_resolution_clock::now();
+        auto dur = std::chrono::duration_cast<std::chrono::seconds>(timer_end - timer_start);
+
+        if (dur >= std::chrono::seconds(2)) {
+            PressKey(0x48);
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            ReleaseKey(0x48);
+            timer_start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
     }
 
     return 0;
