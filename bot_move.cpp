@@ -88,8 +88,67 @@ void wiggleMouse(LONG dx, LONG dy) {
     }
 }
 
+void callMutt() {
+    int i = 0;
+    while (i < 2) {
+        PressKey(0x17); 
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        ReleaseKey(0x17);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        i++;
+    }
+
+    PressKey(0x26); // l
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    ReleaseKey(0x26);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    PressKey(0x1C); //enter
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    ReleaseKey(0x1C);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    int k = 0;
+    while (k < 19) {
+        PressKey(0x25); //k
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        ReleaseKey(0x25);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        k++;
+    }
+
+    PressKey(0x1C); //enter
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    ReleaseKey(0x1C);
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    PressKey(0x25); //k
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    ReleaseKey(0x25);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+
+    int e = 0;
+    while (e < 2) {
+        PressKey(0x1C); //enter
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        ReleaseKey(0x1C);
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
+
+    int b = 0;
+    while (b < 5) {
+        PressKey(0x0E); //backspace to close phone
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        ReleaseKey(0x0E);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));        
+    }
+
+}
+
 int main() {
     auto timer_start = std::chrono::high_resolution_clock::now();
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+    int muttCallCount = 0;
 
     while (true) {
         int sleep_timer = randGen(1, 0);
@@ -108,11 +167,11 @@ int main() {
         auto timer_end = std::chrono::high_resolution_clock::now();
         auto dur = std::chrono::duration_cast<std::chrono::seconds>(timer_end - timer_start);
 
-        if (dur >= std::chrono::seconds(2)) {
-            PressKey(0x48);
+        if (dur >= std::chrono::hours(1) && muttCallCount < 2) {
+            callMutt();
             std::this_thread::sleep_for(std::chrono::seconds(2));
-            ReleaseKey(0x48);
             timer_start = std::chrono::high_resolution_clock::now();
+            muttCallCount++;
         }
         std::this_thread::sleep_for(std::chrono::seconds(sleep_timer));
     }
